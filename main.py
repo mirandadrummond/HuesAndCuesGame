@@ -78,8 +78,9 @@ def from_rgb_to_Board(CELL_SIZE):
 def introduce_players():
     print("Instructions: ")
     print("Hues and Cues involves each player selecting the colour based on the rgb number clue and the word clue")
-    print("Then the player with the worst guess will go first on the next round. There are a total of 10 rounds")
-    print("There is also a computer player which will play. The winner is the person who gets closest to the actual colour")
+    print("Then the player with the worst guess will go first on the next round. There are as many round as you wish.")
+    print("There is also a computer player which will play. The winner is the person who gets closest to the actual colour.")
+    print("That means the player with the smallest score is winning.")
     print("You may now input the number of players and begin! ")
 
     N_PLAYERS = 0
