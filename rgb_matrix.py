@@ -47,6 +47,7 @@ board_rgb_matrix = [[[97, 43, 15], [107, 39, 16], [117, 34, 20], [130, 31, 25], 
                      [25, 139, 67], [20, 145, 69], [21, 154, 73], [24, 161, 73], [28, 170, 76], [30, 178, 76], [44, 179, 77], [51, 180, 86], [57, 183, 93], [71, 180, 104],
                      [68, 184, 111], [57, 185, 124], [48, 187, 138], [42, 186, 148], [34, 186, 163], [29, 185, 172], [28, 186, 189], [21, 187, 200], [18, 182, 216], [15, 177, 225]]]
 
+# O(n*m) where n*m are dimentionsof color matrix
 def flatten_list(_2d_list):
     flat_list = []
     # Iterate through the outer list
@@ -63,4 +64,4 @@ flattened_board_rgb_matrix = flatten_list(board_rgb_matrix)
 
 #sorting the matrix based on all 3 RGBs
 flattened_board_rgb_matrix = sorted(flattened_board_rgb_matrix, key=lambda x: x[0])
-print(flattened_board_rgb_matrix)
+#print(flattened_board_rgb_matrix)
