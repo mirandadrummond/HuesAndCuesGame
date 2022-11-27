@@ -139,7 +139,6 @@ class Round:
                 for event in pygame.event.get():
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
-                        print(" Mouse click pos: ", pos)
                         if self.inside_board(pos):
                             self.circle_locations[current_player] = (pos[0]//self.CELL_SIZE, pos[1]//self.CELL_SIZE)
                             self.calculate_distance_from_real_color((pos[0]//self.CELL_SIZE, pos[1]//self.CELL_SIZE), current_player)
@@ -153,8 +152,6 @@ class Round:
             self.draw_board_players_clue_circles_on_screen()
 
         self.update_scores()
-
-        print(self.PLAYER_NAMES_SCORES)
         self.display_actual_color()
         time.sleep(4)
 
@@ -170,8 +167,6 @@ class Round:
 
     # O(1)
     def calculate_distance_from_real_color(self, indexes, current_player):
-        print(" calculating distance from ", current_player, self.circle_locations[current_player]," to " ,self.true_indexing)
-        print("difference - ", (abs(self.true_indexing[0]-indexes[0])+abs(self.true_indexing[1] - indexes[1])))
         self.round_scores_hidden[current_player] += (abs(self.true_indexing[0]-indexes[0])+abs(self.true_indexing[1] - indexes[1]))
 
     # O(1)
@@ -193,7 +188,6 @@ class Round:
                 pos = flattened_board_rgb_matrix[i][1]
                 break
 
-        print("Bots position: ", pos)
         self.circle_locations['Bot'] = (pos[0], pos[1])
         self.calculate_distance_from_real_color((pos[0], pos[1]), 'Bot')
 
@@ -212,7 +206,7 @@ class Round:
     # O(n*m) + O(p)  where n and m are dimensions of the board and p is number of players
     def draw_board_players_clue_circles_on_screen(self):
         self.screen.fill('black')
-        #print(" Board cell matrix  - " ,len(self.board.cell_matrix))
+
         for i in range(len(self.board.cell_matrix)):
             for j in range(len(self.board.cell_matrix[0])):
                 posx = self.board.cell_matrix[i][j].posx
@@ -265,14 +259,10 @@ def main(N_PLAYERS, PLAYER_NAMES_SCORES):
 
     while True:
         #randomly choose a cell in the board
-        #print(len(board.cell_matrix[0]))
         rand_col = random.randint(0, len(board.cell_matrix[0])-1) #(0-30)
         rand_row = random.randint(0, len(board.cell_matrix)-1) #(0-16)
-        print("Actual position ",rand_row,"  " , rand_col)
         rand_rgb = board.cell_matrix[rand_row][rand_col]
         color_clue = rgb_to_color_clue[tuple(rand_rgb.rgb)]
-        print(color_clue)
-        #print([rand_row, rand_col])
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
