@@ -70,6 +70,11 @@ def introduce_players():
     N_PLAYERS = 0
     while N_PLAYERS < 1 or N_PLAYERS > 9:
         try:
+            print("Instructions: ")
+            print("Hues and Cues involves each player selecting the colour based on the rgb number clue and the word clue")
+            print("Then the player with the worst guess will go first on the next round. There are a total of 10 rounds")
+            print("There is also a computer player which will play. The winner is the person who gets closest to the actual colour")
+            print("You may now input the number of players and begin! ")
             N_PLAYERS = int(input("Enter the number of players (1-9) >> "))
         except ValueError:
             print("The input was not a valid integer.")
