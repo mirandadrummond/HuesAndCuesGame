@@ -134,6 +134,7 @@ class Round:
             self.print_whos_turn(current_player)
             not_clicked_on_cell = True
             if current_player == 'Bot':
+                time.sleep(1)
                 self.bots_move()
                 not_clicked_on_cell = False
             while not_clicked_on_cell:
