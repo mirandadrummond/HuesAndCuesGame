@@ -114,14 +114,17 @@ clue_to_rgb = {"Apple" :  [[175, 30, 35], [198, 33, 39], [222, 31, 38], [237, 28
               [247, 156, 154], [246, 157, 167], [244, 156, 172], [253, 178, 121], [251, 175, 133], [248, 175, 143],
               [250, 178, 158], [244, 183, 175], [198, 140, 189]]}
 
-# lists to tuples (cause lists are unhashable)
+# below code gives us a dictionary which, given an rgb directly gives you a color clue
+
+# lists to tuples (because lists are unhashable)
+# O(n*m) where n*m are dimensions of color matrix
 for key in clue_to_rgb.keys():
     for index, rgb in enumerate(clue_to_rgb[key]):
         rgb = tuple(rgb)
-        clue_to_rgb[key][index]=rgb
-
+        clue_to_rgb[key][index] = rgb
 
 rgb_to_color_clue = {}
+# O(n*m)
 for key in clue_to_rgb.keys():
     for rgb in clue_to_rgb[key]:
         rgb_to_color_clue[rgb] = key
