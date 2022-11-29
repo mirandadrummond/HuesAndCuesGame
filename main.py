@@ -45,7 +45,7 @@ def binary_search(rgb_tuple, left, right):
         mid = (left+right)//2
         #compare if we found the whole tuple
         if flattened_board_rgb_matrix[mid][0][0] == rgb_tuple[0] and flattened_board_rgb_matrix[mid][0][1] == rgb_tuple[1] and flattened_board_rgb_matrix[mid][0][2] == rgb_tuple[2]:
-            print("Found")
+            # print("Found")
             return (mid, mid)
         # if we found that r indexes are the same, we stop and continue with iterative search in def bots_move
         if flattened_board_rgb_matrix[mid][0][0] == rgb_tuple[0]:
