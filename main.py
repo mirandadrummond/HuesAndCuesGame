@@ -141,10 +141,13 @@ class Round:
                 for event in pygame.event.get():
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
-                        if self.inside_board(pos):
+                        # O(p)
+                        if self.inside_board(pos) and (pos[0]//self.CELL_SIZE, pos[1]//self.CELL_SIZE) not in self.circle_locations.values():
                             self.circle_locations[current_player] = (pos[0]//self.CELL_SIZE, pos[1]//self.CELL_SIZE)
                             self.calculate_distance_from_real_color((pos[0]//self.CELL_SIZE, pos[1]//self.CELL_SIZE), current_player)
                             not_clicked_on_cell = False
+                        else:
+                            print("The click was outside the board or on top of other players circle. Choose the spot wisely.")
 
                     if event.type == pygame.QUIT:
                         pygame.quit()
