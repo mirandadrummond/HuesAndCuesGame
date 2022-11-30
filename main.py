@@ -28,7 +28,7 @@ def partition(player_seq_list, left, right):
   return pivot
 
 #quicksort function
-# O(nlog(n)) n = number of players
+# O(plog(p)) p = number of players but p can be considered a constant so O(1)
 def quicksort_inplace(player_seq_list, left, right):
     if left > right:
         return
@@ -38,31 +38,23 @@ def quicksort_inplace(player_seq_list, left, right):
 
 #binary search for a Red color in a flattened matrix that looks like the following: [[(r,g,b)(index1, index2)], [(r,g,b)(index01, index02],...]
 # the flattened matrix is also sorted by red, green and blue values in RGB (in order)
-# worst case and average case time complexity O(log(n*m))  n*m being the total amount of color cells in the cell_matrix with n*m dimensions
+# worst case and average case time complexity O(log(n))  n being the number of color cells in the color matrix
 def binary_search(rgb_tuple, left, right):
     # we are looking for index1 and index2 of an rgb_tuple
     while right >= left:
         mid = (left+right)//2
         #compare if we found the whole tuple
-        if flattened_board_rgb_matrix[mid][0][0] == rgb_tuple[0] and flattened_board_rgb_matrix[mid][0][1] == rgb_tuple[1] and flattened_board_rgb_matrix[mid][0][2] == rgb_tuple[2]:
-            # print("Found")
-            return (mid, mid)
-        # if we found that r indexes are the same, we stop and continue with iterative search in def bots_move
-        if flattened_board_rgb_matrix[mid][0][0] == rgb_tuple[0]:
-            # before continuing with iterative search we need to check which part of the list should we drop and keep, thus we check g value (because flattened list is sorted)
-            if flattened_board_rgb_matrix[mid][0][1] >= rgb_tuple[1]:
-                return (left, mid)
-            else:
-                return (mid, right)
-        if flattened_board_rgb_matrix[mid][0][0] < rgb_tuple[0]:
-            left = mid + 1  # search on the right subarray
-        elif flattened_board_rgb_matrix[mid][0][0] > rgb_tuple[0]:
-            right = mid - 1  # otherwise search in the left subarray
-    print("Could not find", rgb_tuple)
+        if flattened_board_rgb_matrix[mid][0] == rgb_tuple:
+            return flattened_board_rgb_matrix[mid][1]
+        elif flattened_board_rgb_matrix[mid][0] > rgb_tuple:
+            right = mid - 1
+        else:
+            left = mid + 1
+    #print("Could not find", rgb_tuple)
     return (7, 15) #just in case of any errors the automatic player still makes a default move which is the center of the board
 
 # function receives a matrix of [r,g,b] colors from rgb_matrix.py and translates it into a Board object
-# O(n*m) n and m being the dimensions of the color matrix
+# O(n) n being the number of color cells in the color matrix
 def from_rgb_to_Board(CELL_SIZE):
     board_cell_matrix = [[0 for _ in range(len(board_rgb_matrix[0]))] for _ in range(len(board_rgb_matrix))]
     # transform each cell in matrix into a Cell object and create board_cell_matrix
@@ -74,7 +66,7 @@ def from_rgb_to_Board(CELL_SIZE):
     board = Board(board_cell_matrix)
     return board
 
-# O(n) n = number of players
+# O(p) p = number of players (but p can be considered a constant) so O(1)
 def introduce_players():
     print("Instructions: ")
     print("Hues and Cues involves each player selecting the colour based on the rgb number clue and the word clue")
@@ -122,8 +114,7 @@ class Round:
         self.color_clue = color_clue  # clue for the color
 
     # round play function that holds all the game logic
-    #(O(n*m) + O(p)) * O(p) where n and m are dimensions of matrix and p is number of players
-    # In case number of players is not dynamic we could say that complexity is O(n*m)
+    # O(nlogn) where n is the total number of color cells in the matrix
     def play_round(self):
         # empty circles
         self.empty_circle_locations()
@@ -135,13 +126,14 @@ class Round:
             not_clicked_on_cell = True
             if current_player == 'Bot':
                 time.sleep(1)
+                # O(nlogn)
                 self.bots_move()
                 not_clicked_on_cell = False
             while not_clicked_on_cell:
                 for event in pygame.event.get():
                     if event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
-                        # O(p)
+
                         if self.inside_board(pos) and (pos[0]//self.CELL_SIZE, pos[1]//self.CELL_SIZE) not in self.circle_locations.values():
                             self.circle_locations[current_player] = (pos[0]//self.CELL_SIZE, pos[1]//self.CELL_SIZE)
                             self.calculate_distance_from_real_color((pos[0]//self.CELL_SIZE, pos[1]//self.CELL_SIZE), current_player)
@@ -153,19 +145,19 @@ class Round:
                         pygame.quit()
                         sys.exit()
 
-            # O(n*m) + O(p)
+            # O(n)
             self.draw_board_players_clue_circles_on_screen()
 
         self.update_scores()
         self.display_actual_color()
         time.sleep(4)
 
-    # O(n) n = number of players
+    # O(p) p = number of players but can be considered constant so O(1)
     def empty_circle_locations(self):
         for name in self.PLAYER_NAMES_SCORES:
             self.circle_locations[name] = -1
 
-    # O(n) n = number of players
+    # O(p) p = number of players but can be considered constant so O(1)
     def update_scores(self):
         for key in self.round_scores_hidden.keys():
             self.PLAYER_NAMES_SCORES[key] = self.round_scores_hidden[key]
@@ -182,16 +174,11 @@ class Round:
         pygame.display.flip()
         time.sleep(2)
 
-    # O(n*m) in the worst case (n*m = dimensions of color matrix)
+    # O(nlogn) n being total number of color cells
     def bots_move(self):
         rand_rgb_index = random.randint(0, len(clue_to_rgb[self.color_clue])-1)
         bots_rgb_tuple = clue_to_rgb[self.color_clue][rand_rgb_index]
-        left, right = binary_search(bots_rgb_tuple, 0, len(flattened_board_rgb_matrix)-1)
-        # iterative part
-        for i in range(left, right+1):
-            if flattened_board_rgb_matrix[i][0] == bots_rgb_tuple:
-                pos = flattened_board_rgb_matrix[i][1]
-                break
+        pos = binary_search(bots_rgb_tuple, 0, len(flattened_board_rgb_matrix)-1)
 
         self.circle_locations['Bot'] = (pos[0], pos[1])
         self.calculate_distance_from_real_color((pos[0], pos[1]), 'Bot')
@@ -208,7 +195,7 @@ class Round:
         pygame.display.update()
 
     # prints all the vital parts on the board
-    # O(n*m) + O(p)  where n and m are dimensions of the board and p is number of players
+    # O(n) where n is the number of color cells in a matrix
     def draw_board_players_clue_circles_on_screen(self):
         self.screen.fill('black')
 
@@ -249,7 +236,7 @@ class Round:
         pygame.display.flip()
 
 # Initiates rounds
-# O(r*n*m) where r is number of rounds and n*m are dimensions of the color matrix
+# O(r*n) where r is number of rounds and n is the number of color cells in the matrix
 def main(N_PLAYERS, PLAYER_NAMES_SCORES):
     WINDOWWIDTH, WINDOWHEIGHT = 640, 600
     CELL_SIZE = 20
