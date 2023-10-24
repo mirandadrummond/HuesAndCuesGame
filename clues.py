@@ -124,7 +124,7 @@ for key in clue_to_rgb.keys():
         clue_to_rgb[key][index] = rgb
 
 rgb_to_color_clue = {}
-# O(n*m)
+# O(n*m) where n*m are dimensions of color matrix
 for key in clue_to_rgb.keys():
     for rgb in clue_to_rgb[key]:
         rgb_to_color_clue[rgb] = key
