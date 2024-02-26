@@ -260,7 +260,6 @@ def main(N_PLAYERS, PLAYER_NAMES_SCORES):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
         player_seq_list = []
         for key, value in PLAYER_NAMES_SCORES.items():
             player_seq_list.append((key, value))
